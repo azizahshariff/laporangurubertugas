@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Laporan Guru Bertugas</title>
+  <title>E-Laporan SKSR</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .tab-active { border-bottom: 4px solid #1e40af; color: #1e40af; background-color: white; }
@@ -14,103 +14,166 @@
 <body class="bg-slate-100 p-4 font-sans text-sm">
   <div class="max-w-2xl mx-auto space-y-4">
     
-    <!-- Header -->
+    <!-- Header Sekolah -->
     <div class="bg-blue-900 p-6 rounded-2xl text-white text-center shadow-xl">
       <img src="logo_sksr.png" alt="Logo SKSR" class="w-16 h-16 mx-auto mb-2 object-contain">
       <h1 class="text-xl font-bold uppercase tracking-wider">SK SIMPANG RENGAM</h1>
-      <p class="text-[10px] opacity-80 uppercase">Laporan Guru Bertugas</p>
+      <p class="text-[10px] opacity-80 uppercase">Sistem Pengurusan Laporan Digital (e-SPSD)</p>
     </div>
 
-    <!-- Pilihan Tab -->
+    <!-- Pilihan Tab (Harian / Perhimpunan) -->
     <div class="flex rounded-xl overflow-hidden shadow-sm font-bold">
-      <button onclick="tukarTab('harian')" id="btnHarian" class="flex-1 py-4 tab-active uppercase">Harian</button>
-      <button onclick="tukarTab('perhimpunan')" id="btnPerhimpunan" class="flex-1 py-4 tab-inactive uppercase">Perhimpunan</button>
+      <button onclick="tukarTab('harian')" id="btnHarian" class="flex-1 py-4 tab-active uppercase transition-all">Harian</button>
+      <button onclick="tukarTab('perhimpunan')" id="btnPerhimpunan" class="flex-1 py-4 tab-inactive uppercase transition-all">Perhimpunan</button>
     </div>
 
-    <!-- Maklumat Pentadbiran (Sentiasa Ada) -->
+    <!-- Bahagian Maklumat Pentadbiran (Sentiasa Dipaparkan) -->
     <div class="bg-white p-6 rounded-2xl shadow-sm space-y-4">
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block mb-1 font-bold">📅 Tarikh:</label><input type="date" id="tarikh" class="w-full p-3 bg-gray-50 border rounded-xl outline-none"></div>
-        <div><label class="block mb-1 font-bold">🗓️ Minggu:</label><input type="number" id="minggu" placeholder="Minggu" class="w-full p-3 bg-gray-50 border rounded-xl outline-none"></div>
+        <div>
+          <label class="block mb-1 font-bold">📅 Tarikh:</label>
+          <input type="date" id="tarikh" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block mb-1 font-bold">🗓️ Minggu:</label>
+          <input type="number" id="minggu" placeholder="Cth: 16" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-blue-500">
+        </div>
       </div>
-      <div><label class="block mb-1 font-bold">👤 Pelapor:</label><select id="nama" class="w-full p-3 bg-gray-50 border rounded-xl"><option value="">Pilih Nama</option></select></div>
+      <div>
+        <label class="block mb-1 font-bold">👤 Pelapor:</label>
+        <select id="nama" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-blue-500">
+          <option value="">Pilih Nama</option>
+        </select>
+      </div>
       <div class="grid grid-cols-2 gap-4">
-        <div><label class="block mb-1 font-bold">👥 Sesi:</label><select id="sesi" class="w-full p-3 bg-gray-50 border rounded-xl"><option value="">Pilih Sesi</option></select></div>
-        <div><label class="block mb-1 font-bold">👥 Kumpulan:</label><select id="kumpulan" class="w-full p-3 bg-gray-50 border rounded-xl"><option value="">Pilih Kumpulan</option></select></div>
+        <div>
+          <label class="block mb-1 font-bold">👥 Sesi:</label>
+          <select id="sesi" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-blue-500">
+            <option value="">Pilih Sesi</option>
+          </select>
+        </div>
+        <div>
+          <label class="block mb-1 font-bold">👥 Kumpulan:</label>
+          <select id="kumpulan" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-blue-500">
+            <option value="">Pilih Kumpulan</option>
+          </select>
+        </div>
       </div>
     </div>
 
-    <!-- TAB: LAPORAN HARIAN -->
+    <!-- KANDUNGAN TAB 1: LAPORAN HARIAN -->
     <div id="tabHarian" class="space-y-4">
       <div class="bg-white p-6 rounded-2xl shadow-sm space-y-4 border-l-8 border-blue-600">
+        <h2 class="text-blue-800 font-bold border-b pb-2 uppercase text-xs">🚨 Laporan Bertugas Harian</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><label class="font-bold">⚖️ Disiplin:</label><select id="disiplin" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
-          <div><label class="font-bold">🧹 Kelas:</label><select id="kelas" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
-          <div><label class="font-bold">🛡️ Keselamatan:</label><select id="keselamatan" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
-          <div><label class="font-bold">🍴 Kantin:</label><select id="kantin" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
+          <div><label class="font-bold block mb-1">⚖️ Disiplin:</label><select id="disiplin" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
+          <div><label class="font-bold block mb-1">🧹 Kelas:</label><select id="kelas" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
+          <div><label class="font-bold block mb-1">🛡️ Keselamatan:</label><select id="keselamatan" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
+          <div><label class="font-bold block mb-1">🍴 Kantin:</label><select id="kantin" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option><option>Sederhana</option></select></div>
         </div>
-        <div><label class="font-bold">📖 PdPC:</label><select id="pdpc" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Cemerlang</option><option>Baik</option><option>Memuaskan</option></select></div>
-        <div><label class="font-bold">🚨 Kes Kecemasan:</label><textarea id="kecemasan" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea></div>
+        <div><label class="font-bold block mb-1">📖 PdPC:</label><select id="pdpc" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Cemerlang</option><option>Baik</option><option>Memuaskan</option></select></div>
+        <div><label class="font-bold block mb-1">🚨 Kes Kecemasan:</label><textarea id="kecemasan" placeholder="Tulis '-' jika tiada" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea></div>
       </div>
     </div>
 
-    <!-- TAB: PERHIMPUNAN -->
+    <!-- KANDUNGAN TAB 2: LAPORAN PERHIMPUNAN -->
     <div id="tabPerhimpunan" class="hidden space-y-4">
       <div class="bg-white p-6 rounded-2xl shadow-sm space-y-4 border-l-8 border-green-600">
-        <div><label class="font-bold">📝 Laporan Guru Bertugas Lepas:</label><textarea id="laporan_lepas" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea></div>
-        <div><label class="font-bold">🎤 Ucapan Pentadbir (Guru Besar):</label><textarea id="ucapan_gb" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea></div>
+        <h2 class="text-green-800 font-bold border-b pb-2 uppercase text-xs">📢 Laporan Perhimpunan</h2>
+        <div><label class="font-bold block mb-1">📝 Laporan Guru Lepas:</label><textarea id="laporan_lepas" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea></div>
+        <div><label class="font-bold block mb-1">🎤 Ucapan Pentadbir:</label><textarea id="ucapan_gb" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea></div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><label class="font-bold">📚 Hadis 40:</label><input type="text" id="hadis" class="w-full p-3 bg-gray-50 border rounded-xl"></div>
-          <div><label class="font-bold">🌱 Sivik:</label><input type="text" id="sivik" class="w-full p-3 bg-gray-50 border rounded-xl"></div>
+          <div><label class="font-bold block mb-1">📚 Hadis 40:</label><input type="text" id="hadis" class="w-full p-3 bg-gray-50 border rounded-xl"></div>
+          <div><label class="font-bold block mb-1">🌱 Nilai Sivik:</label><input type="text" id="sivik" class="w-full p-3 bg-gray-50 border rounded-xl"></div>
         </div>
-        <div><label class="font-bold">📌 Catatan:</label><input type="text" id="catatan" class="w-full p-3 bg-gray-50 border rounded-xl"></div>
+        <div><label class="font-bold block mb-1">📌 Catatan:</label><input type="text" id="catatan" class="w-full p-3 bg-gray-50 border rounded-xl"></div>
       </div>
     </div>
 
-    <button onclick="hantarData()" id="btnSubmit" class="w-full bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-900 transition active:scale-95 uppercase">Hantar Laporan</button>
+    <!-- Butang Hantar -->
+    <button onclick="hantarData()" id="btnSubmit" class="w-full bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-blue-900 transition active:scale-95 uppercase tracking-widest">
+      Hantar Laporan
+    </button>
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwdPZGC_2tgOnPAxePrbTK7_JX8lX5KKGrkJzKxacoA3DM_CssCa2fMRM8D4pUrDzdh/exec";
+    // Pautan URL Web App daripada Apps Script tuan
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzAsdZpEZSp9M6tKUPzfJS6raVPIZlqc3fwleKLwcacKs34Zo-4ZkjxahLOBrMBrJWqRw/exec";
 
+    // Fungsi Penukaran Tab
     function tukarTab(jenis) {
       document.getElementById('tabHarian').classList.toggle('hidden', jenis !== 'harian');
       document.getElementById('tabPerhimpunan').classList.toggle('hidden', jenis !== 'perhimpunan');
-      document.getElementById('btnHarian').className = jenis === 'harian' ? "flex-1 py-4 tab-active uppercase" : "flex-1 py-4 tab-inactive uppercase";
-      document.getElementById('btnPerhimpunan').className = jenis === 'perhimpunan' ? "flex-1 py-4 tab-active uppercase" : "flex-1 py-4 tab-inactive uppercase";
+      document.getElementById('btnHarian').className = jenis === 'harian' ? "flex-1 py-4 tab-active uppercase transition-all" : "flex-1 py-4 tab-inactive uppercase transition-all";
+      document.getElementById('btnPerhimpunan').className = jenis === 'perhimpunan' ? "flex-1 py-4 tab-active uppercase transition-all" : "flex-1 py-4 tab-inactive uppercase transition-all";
     }
 
+    // Mengambil data Dropdown (Nama, Sesi, Kumpulan) dari tab Tetapan Google Sheets
     window.onload = async function() {
       try {
         const res = await fetch(GAS_URL);
         const data = await res.json();
-        const fill = (id, list) => {
+        
+        const fillDropdown = (id, list) => {
           const el = document.getElementById(id);
-          list.forEach(item => { let o = document.createElement('option'); o.value=item; o.text=item; el.appendChild(o); });
+          list.forEach(item => {
+            let o = document.createElement('option');
+            o.value = item;
+            o.text = item;
+            el.appendChild(o);
+          });
         };
-        fill('nama', data.guru);
-        fill('sesi', data.sesi);
-        fill('kumpulan', data.kumpulan);
-      } catch (e) { console.log("Gagal tarik data"); }
+
+        fillDropdown('nama', data.guru);
+        fillDropdown('sesi', data.sesi);
+        fillDropdown('kumpulan', data.kumpulan);
+      } catch (e) {
+        console.error("Gagal menarik data tetapan: ", e);
+      }
     };
 
+    // Fungsi Menghantar Laporan
     async function hantarData() {
       const btn = document.getElementById('btnSubmit');
       const payload = {
-        tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
-        nama: document.getElementById('nama').value, sesi: document.getElementById('sesi').value, kumpulan: document.getElementById('kumpulan').value,
-        disiplin: document.getElementById('disiplin').value, kelas: document.getElementById('kelas').value,
-        keselamatan: document.getElementById('keselamatan').value, kantin: document.getElementById('kantin').value,
-        pdpc: document.getElementById('pdpc').value, kecemasan: document.getElementById('kecemasan').value,
-        laporan_lepas: document.getElementById('laporan_lepas').value, ucapan_gb: document.getElementById('ucapan_gb').value,
-        hadis: document.getElementById('hadis').value, sivik: document.getElementById('sivik').value, catatan: document.getElementById('catatan').value
+        tarikh: document.getElementById('tarikh').value,
+        minggu: document.getElementById('minggu').value,
+        nama: document.getElementById('nama').value,
+        sesi: document.getElementById('sesi').value,
+        kumpulan: document.getElementById('kumpulan').value,
+        disiplin: document.getElementById('disiplin').value,
+        kelas: document.getElementById('kelas').value,
+        keselamatan: document.getElementById('keselamatan').value,
+        kantin: document.getElementById('kantin').value,
+        pdpc: document.getElementById('pdpc').value,
+        kecemasan: document.getElementById('kecemasan').value,
+        laporan_lepas: document.getElementById('laporan_lepas').value,
+        ucapan_gb: document.getElementById('ucapan_gb').value,
+        hadis: document.getElementById('hadis').value,
+        sivik: document.getElementById('sivik').value,
+        catatan: document.getElementById('catatan').value
       };
-      if(!payload.tarikh || !payload.nama) return alert("Lengkapkan Tarikh dan Nama!");
-      btn.disabled = true; btn.innerText = "MENGHANTAR...";
+
+      if(!payload.tarikh || !payload.nama) {
+        return alert("Sila isi sekurang-kurangnya Tarikh dan Nama Pelapor!");
+      }
+
+      btn.disabled = true;
+      btn.innerText = "SEDANG DIHANTAR...";
+
       try {
-        await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-        alert("Berjaya!"); location.reload();
-      } catch (e) { alert("Ralat!"); btn.disabled = false; }
+        await fetch(GAS_URL, { 
+          method: "POST", 
+          mode: "no-cors", 
+          body: JSON.stringify(payload) 
+        });
+        alert("Tahniah! Laporan berjaya dihantar ke Google Sheets dan Telegram.");
+        location.reload(); // Reset paparan ke depan
+      } catch (e) {
+        alert("Ralat penghantaran! Sila cuba lagi.");
+        btn.disabled = false;
+        btn.innerText = "HANTAR LAPORAN";
+      }
     }
   </script>
 </body>
