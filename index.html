@@ -76,7 +76,7 @@
     <footer class="text-center py-6">
       <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">
         Hak Cipta Terpelihara &copy; 2026<br>
-        <span class="text-blue-900">@AZIZAHSHARIFF</span> | SK SIMPANG RENGAM
+        <span class="text-blue-900">@azizahshariff</span> | SK SIMPANG RENGAM
       </p>
     </footer>
   </div>
@@ -123,7 +123,7 @@
   </nav>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzccFPacss9wUPHoRl0eSGgL7dzEaerOc1L5_SGxPP4BWFh8C9QHjawLTG55pGczlli1g/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwW4TILnUhig3FlzbxNztNZ9AlxggNWEC9Mzxk3hSCWpanINLHZvfc3bdxAfPZi-_BHGQ/exec";
     let jenisLaporan = "Harian";
 
     // AMBIL DATA DARI TAB TETAPAN SPREADSHEET
@@ -186,24 +186,55 @@
     }
 
     async function hantar() {
-      const b = document.getElementById('btnSend');
-      b.disabled = true; b.innerText = "MENGHANTAR...";
-      const data = {
-        jenis_laporan: jenisLaporan,
-        tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
-        nama: document.getElementById('nama').value, sesi: document.getElementById('sesi').value, kumpulan: document.getElementById('kumpulan').value,
-        disiplin: document.getElementById('disiplin').value || "", kelas: document.getElementById('kelas').value || "", 
-        keselamatan: document.getElementById('keselamatan').value || "", kantin: document.getElementById('kantin').value || "", 
-        pdpc: document.getElementById('pdpc').value || "", kecemasan: document.getElementById('kecemasan').value || "",
-        laporan_lepas: document.getElementById('laporan_lepas').value || "", ucapan_gb: document.getElementById('ucapan_gb').value || "",
-        pentadbir_berucap: document.getElementById('pentadbir_berucap').value || "", hadis: document.getElementById('hadis').value || "",
-        sivik: document.getElementById('sivik').value || "", catatan: document.getElementById('catatan').value || ""
-      };
-      try {
-        await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-        alert("✅ LAPORAN BERJAYA!"); location.reload();
-      } catch (e) { alert("Ralat"); b.disabled = false; b.innerText = "HANTAR"; }
-    }
-  </script>
-</body>
-</html>
+  const b = document.getElementById('btnSend');
+  
+  // Pastikan nama pelapor dipilih
+  if(!document.getElementById('nama').value) {
+    return alert("⚠️ Sila pilih Nama Pelapor!");
+  }
+
+  b.disabled = true;
+  b.innerText = "SEDANG DIHANTAR...";
+  
+  // Ambil semua data dari input/textarea
+  const data = {
+    jenis_laporan: jenisLaporan,
+    tarikh: document.getElementById('tarikh').value,
+    minggu: document.getElementById('minggu').value,
+    nama: document.getElementById('nama').value,
+    sesi: document.getElementById('sesi').value,
+    kumpulan: document.getElementById('kumpulan').value,
+    
+    // Data Laporan Harian
+    disiplin: document.getElementById('disiplin').value || "",
+    kelas: document.getElementById('kelas').value || "",
+    keselamatan: document.getElementById('keselamatan').value || "",
+    kantin: document.getElementById('kantin').value || "",
+    pdpc: document.getElementById('pdpc').value || "",
+    kecemasan: document.getElementById('kecemasan').value || "",
+    
+    // Data Laporan Perhimpunan (Pastikan ID ini sama dengan ID di textarea)
+    laporan_lepas: document.getElementById('laporan_lepas').value || "",
+    ucapan_gb: document.getElementById('ucapan_gb').value || "",
+    pentadbir_berucap: document.getElementById('pentadbir_berucap').value || "",
+    hadis: document.getElementById('hadis').value || "",
+    sivik: document.getElementById('sivik').value || "",
+    catatan: document.getElementById('catatan').value || ""
+  };
+
+  try {
+    // Hantar ke Google Apps Script
+    await fetch(GAS_URL, { 
+      method: "POST", 
+      mode: "no-cors", 
+      body: JSON.stringify(data) 
+    });
+    
+    alert("✅ LAPORAN BERJAYA DIHANTAR!");
+    location.reload(); // Refresh borang selepas berjaya
+  } catch (e) {
+    alert("❌ GAGAL: " + e);
+    b.disabled = false;
+    b.innerText = "Hantar Laporan";
+  }
+}
