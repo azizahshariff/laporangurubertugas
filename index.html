@@ -3,112 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard e-Laporan Guru Bertugas</title>
+  <title>e-Laporan Guru Bertugas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .active-nav { background-color: #1e3a8a; color: white; }
+    .tab-active { border-bottom: 4px solid #1e40af; color: #1e40af; background-color: white; }
+    .tab-inactive { color: #64748b; background-color: #f1f5f9; }
+    .nav-active { background-color: #1e3a8a; color: white; transform: translateY(-5px); }
     .hidden { display: none; }
   </style>
 </head>
-<body class="bg-slate-50 font-sans">
+<body class="bg-slate-100 p-4 pb-24 font-sans text-sm">
 
-  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 flex bg-white shadow-2xl rounded-2xl p-1 z-50 border w-[90%] max-w-md">
-    <button onclick="tukarPage('borang')" id="navBorang" class="flex-1 py-3 rounded-xl font-bold active-nav transition">📝 BORANG</button>
-    <button onclick="tukarPage('dash')" id="navDash" class="flex-1 py-3 rounded-xl font-bold text-gray-500 transition">📊 DASHBOARD</button>
-  </div>
-
-  <div id="pageBorang" class="p-4 pb-24 max-w-xl mx-auto space-y-4">
-    <div class="bg-blue-900 p-6 rounded-3xl text-white text-center shadow-lg">
-      <h1 class="text-xl font-bold">SK SIMPANG RENGAM</h1>
-      <p class="text-xs opacity-75">e-Laporan Guru Bertugas</p>
+  <div id="pageBorang" class="max-w-2xl mx-auto space-y-4">
+    <div class="bg-blue-900 p-6 rounded-3xl text-white text-center shadow-xl">
+      <h1 class="text-xl font-bold uppercase tracking-wider">SK SIMPANG RENGAM</h1>
+      <p class="text-[10px] opacity-80 uppercase">e-Laporan Guru Bertugas</p>
     </div>
 
-    <div class="flex bg-gray-200 rounded-2xl p-1 font-bold">
-      <button onclick="tukarTab('harian')" id="btnH" class="flex-1 py-3 rounded-xl bg-white shadow text-blue-900">HARIAN</button>
-      <button onclick="tukarTab('perhimpunan')" id="btnP" class="flex-1 py-3 rounded-xl text-gray-500">PERHIMPUNAN</button>
+    <div class="flex rounded-xl overflow-hidden shadow-sm font-bold">
+      <button onclick="tukarTab('harian')" id="btnHarian" class="flex-1 py-4 tab-active uppercase transition-all">Harian</button>
+      <button onclick="tukarTab('perhimpunan')" id="btnPerhimpunan" class="flex-1 py-4 tab-inactive uppercase transition-all">Perhimpunan</button>
     </div>
 
     <div class="bg-white p-6 rounded-3xl shadow-sm space-y-4 border">
+      <div class="grid grid-cols-2 gap-4">
+        <input type="date" id="tarikh" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
+        <input type="number" id="minggu" placeholder="Minggu" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
+      </div>
+      <select id="nama" class="w-full p-3 bg-gray-50 border rounded-xl outline-none"><option value="">Pilih Nama Pelapor</option></select>
+      
+      <div id="tabHarian" class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
-            <input type="date" id="tarikh" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
-            <input type="number" id="minggu" placeholder="Minggu" class="w-full p-3 bg-gray-100 rounded-xl outline-none">
+          <div><label class="font-bold text-xs">Disiplin:</label><select id="disiplin" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option></select></div>
+          <div><label class="font-bold text-xs">Kantin:</label><select id="kantin" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Baik</option><option>Cemerlang</option></select></div>
         </div>
-        <select id="nama" class="w-full p-3 bg-gray-100 rounded-xl outline-none"><option value="">Pilih Pelapor</option></select>
-        
-        <div id="contHarian" class="space-y-3">
-            <h3 class="font-bold text-blue-800 text-xs uppercase">🚨 Laporan Harian</h3>
-            <div class="grid grid-cols-2 gap-2"><select id="disiplin" class="p-2 border rounded-xl"><option>Baik</option><option>Cemerlang</option></select><select id="kantin" class="p-2 border rounded-xl"><option>Baik</option><option>Cemerlang</option></select></div>
-            <textarea id="kecemasan" placeholder="Kes Kecemasan" class="w-full p-3 bg-gray-50 border rounded-xl"></textarea>
-        </div>
+        <textarea id="kecemasan" placeholder="Kes Kecemasan" class="w-full p-3 bg-gray-50 border rounded-xl h-20"></textarea>
+      </div>
 
-        <div id="contPerhimpunan" class="hidden space-y-3">
-            <h3 class="font-bold text-green-800 text-xs uppercase">📢 Laporan Perhimpunan</h3>
-            <textarea id="ucapan_gb" placeholder="Ucapan Pentadbir" class="w-full p-3 bg-gray-50 border rounded-xl h-24"></textarea>
-        </div>
+      <div id="tabPerhimpunan" class="hidden space-y-4">
+        <textarea id="ucapan_gb" placeholder="Ucapan Pentadbir" class="w-full p-3 bg-gray-50 border rounded-xl h-28"></textarea>
+        <input type="text" id="hadis" placeholder="Hadis 40" class="w-full p-3 bg-gray-50 border rounded-xl">
+      </div>
 
-        <button onclick="hantar()" id="btnSend" class="w-full bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg">HANTAR LAPORAN</button>
+      <button onclick="hantarData()" id="btnSubmit" class="w-full bg-blue-800 text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition">HANTAR LAPORAN</button>
     </div>
   </div>
 
-  <div id="pageDash" class="p-4 pb-24 max-w-xl mx-auto space-y-4 hidden">
-    <div class="bg-white p-6 rounded-3xl shadow-sm border space-y-4">
-      <h2 class="font-bold text-lg border-b pb-2">📊 Status Laporan Hari Ini</h2>
-      
-      <div id="boxBelumHantar" class="p-4 bg-red-50 text-red-700 rounded-2xl border border-red-100">
-        <p class="text-sm font-bold animate-pulse">Sedang mengemas kini status...</p>
-      </div>
-
-      <div class="p-4 bg-blue-50 text-blue-700 rounded-2xl border border-blue-100">
-        <h4 class="font-bold mb-1">📂 Arkib PDF</h4>
-        <p class="text-xs mb-3">Klik butang di bawah untuk melihat/download PDF laporan.</p>
-        <a href="16VjcI2K_pA_gjxybxVxjNWRHjnzXMrkz" target="_blank" class="inline-block bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase">Buka Folder PDF</a>
+  <div id="pageDash" class="max-w-2xl mx-auto hidden pt-4">
+    <div class="bg-white p-6 rounded-3xl shadow-xl border border-blue-100 min-h-[300px]">
+      <h2 class="text-xl font-black text-slate-800 mb-4 border-b pb-2">STATUS & ARKIB PDF</h2>
+      <div id="boxStatus">
+        <p class="text-center text-gray-400 py-10 animate-pulse text-xs">Memproses data terkini...</p>
       </div>
     </div>
+  </div>
+
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex bg-white shadow-2xl rounded-3xl p-2 z-50 border w-[90%] max-w-sm">
+    <button onclick="tukarPage('borang')" id="navBorang" class="flex-1 py-3 rounded-2xl font-bold nav-active">📝 BORANG</button>
+    <button onclick="tukarPage('dash')" id="navDash" class="flex-1 py-3 rounded-2xl font-bold text-gray-400">📊 STATUS</button>
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzAsdZpEZSp9M6tKUPzfJS6raVPIZlqc3fwleKLwcacKs34Zo-4ZkjxahLOBrMBrJWqRw/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbw6MF25T_SiGhUCZWJ_M7ZBTpEzUx3MqUAuHoJGieb21UmNZiItQ4OHKEHWakyAU4ra6g/exec";
 
     function tukarPage(p) {
       const isB = p === 'borang';
       document.getElementById('pageBorang').classList.toggle('hidden', !isB);
       document.getElementById('pageDash').classList.toggle('hidden', isB);
-      document.getElementById('navBorang').className = isB ? "flex-1 py-3 rounded-xl font-bold active-nav transition" : "flex-1 py-3 rounded-xl font-bold text-gray-500 transition";
-      document.getElementById('navDash').className = !isB ? "flex-1 py-3 rounded-xl font-bold active-nav transition" : "flex-1 py-3 rounded-xl font-bold text-gray-500 transition";
-      if(!isB) muatStatus(); // Muat status dashboard bila klik tab dash
+      document.getElementById('navBorang').className = isB ? "flex-1 py-3 rounded-2xl font-bold nav-active" : "flex-1 py-3 rounded-2xl font-bold text-gray-400";
+      document.getElementById('navDash').className = !isB ? "flex-1 py-3 rounded-2xl font-bold nav-active" : "flex-1 py-3 rounded-2xl font-bold text-gray-400";
+      if(!isB) muatStatus();
     }
 
-    function tukarTab(t) {
-      const isH = t === 'harian';
-      document.getElementById('contHarian').classList.toggle('hidden', !isH);
-      document.getElementById('contPerhimpunan').classList.toggle('hidden', isH);
-      document.getElementById('btnH').className = isH ? "flex-1 py-3 rounded-xl font-bold bg-white shadow text-blue-900" : "flex-1 py-3 rounded-xl font-bold text-gray-500";
-      document.getElementById('btnP').className = !isH ? "flex-1 py-3 rounded-xl font-bold bg-white shadow text-blue-900" : "flex-1 py-3 rounded-xl font-bold text-gray-500";
+    function tukarTab(j) {
+      document.getElementById('tabHarian').classList.toggle('hidden', j !== 'harian');
+      document.getElementById('tabPerhimpunan').classList.toggle('hidden', j !== 'perhimpunan');
+      document.getElementById('btnHarian').className = j === 'harian' ? "flex-1 py-4 tab-active uppercase" : "flex-1 py-4 tab-inactive uppercase";
+      document.getElementById('btnPerhimpunan').className = j === 'perhimpunan' ? "flex-1 py-4 tab-active uppercase" : "flex-1 py-4 tab-inactive uppercase";
     }
 
     async function muatStatus() {
+      try {
         const r = await fetch(GAS_URL + "?page=dashboard");
-        const html = await r.text();
-        document.getElementById('boxBelumHantar').innerHTML = html;
+        document.getElementById('boxStatus').innerHTML = await r.text();
+      } catch (e) { document.getElementById('boxStatus').innerText = "Gagal memuatkan status."; }
     }
 
     window.onload = async () => {
-      const r = await fetch(GAS_URL);
-      const d = await r.json();
-      const f = (id, l) => { const e = document.getElementById(id); l.forEach(i => e.add(new Option(i,i))); };
-      f('nama', d.guru);
+      const res = await fetch(GAS_URL);
+      const data = await res.json();
+      data.guru.forEach(i => document.getElementById('nama').add(new Option(i,i)));
     };
 
-    async function hantar() {
-      const btn = document.getElementById('btnSend');
-      btn.disabled = true; btn.innerText = "MENGHANTAR...";
-      const p = {
-        tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
-        nama: document.getElementById('nama').value,
-        disiplin: document.getElementById('disiplin').value, kantin: document.getElementById('kantin').value,
-        kecemasan: document.getElementById('kecemasan').value, ucapan_gb: document.getElementById('ucapan_gb').value
+    async function hantarData() {
+      const b = document.getElementById('btnSubmit'); b.disabled = true; b.innerText = "MENGHANTAR...";
+      const d = {
+        tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value, nama: document.getElementById('nama').value,
+        disiplin: document.getElementById('disiplin').value, kantin: document.getElementById('kantin').value, kecemasan: document.getElementById('kecemasan').value,
+        ucapan_gb: document.getElementById('ucapan_gb').value, hadis: document.getElementById('hadis').value
       };
-      await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(p) });
+      await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(d) });
       alert("Berjaya!"); location.reload();
     }
   </script>
