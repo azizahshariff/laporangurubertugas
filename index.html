@@ -1,158 +1,158 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>e-Laporan Guru Bertugas | SK Simpang Rengam</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Laporan Guru Bertugas SKSR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-active { background: #1e3a8a; color: white; }
+        .hidden { display: none; }
+        .card-report { font-family: monospace; white-space: pre-wrap; }
+    </style>
 </head>
-<body class="bg-slate-50 pb-20">
-  <div id="pageBorang" class="max-w-xl mx-auto p-4 space-y-6">
-    <header class="bg-blue-900 p-8 rounded-[2rem] text-white text-center shadow-xl">
-      <img src="https://raw.githubusercontent.com/azizahshariff/laporangurubertugas/refs/heads/main/logo_sksr.png" class="w-16 h-16 mx-auto mb-2">
-      <h1 class="text-xl font-bold uppercase">SK SIMPANG RENGAM</h1>
-      <p class="text-[9px] tracking-widest opacity-70">LAPORAN DIGITAL GURU BERTUGAS</p>
-    </header>
-
-    <div class="flex bg-white rounded-xl p-1 shadow-sm border border-gray-100">
-      <button onclick="tukarTab('Harian')" id="btnH" class="flex-1 py-3 rounded-lg bg-blue-900 text-white font-bold">Harian</button>
-      <button onclick="tukarTab('Perhimpunan')" id="btnP" class="flex-1 py-3 rounded-lg text-gray-400 font-bold">Perhimpunan</button>
-    </div>
-
-    <div class="bg-white p-6 rounded-[1.5rem] shadow-lg space-y-4">
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="text-[10px] font-bold text-gray-400">TARIKH</label><input type="date" id="tarikh" class="w-full p-2 bg-gray-50 border rounded-lg"></div>
-        <div><label class="text-[10px] font-bold text-gray-400">MINGGU</label><input type="number" id="minggu" class="w-full p-2 bg-gray-50 border rounded-lg"></div>
-      </div>
-      <div><label class="text-[10px] font-bold text-gray-400">PELAPOR</label><select id="nama" class="w-full p-2 bg-gray-50 border rounded-lg"><option>Memuatkan...</option></select></div>
-      
-      <div id="sectHarian" class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div><label class="text-[10px] font-bold text-gray-400">DISIPLIN</label><select id="disiplin" class="w-full p-2 border rounded-lg"></select></div>
-          <div><label class="text-[10px] font-bold text-gray-400">KEBERSIHAN</label><select id="kelas" class="w-full p-2 border rounded-lg"></select></div>
+<body class="bg-gray-100 min-h-screen pb-24">
+    <div id="borangPage" class="max-w-md mx-auto p-4 space-y-4">
+        <div class="bg-blue-900 text-white p-6 rounded-3xl text-center shadow-lg">
+            <h1 class="font-bold text-xl uppercase">SK SIMPANG RENGAM</h1>
+            <p class="text-[10px] tracking-widest opacity-80">LAPORAN GURU BERTUGAS</p>
         </div>
-        <button onclick="hantar()" id="btnSend" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold">HANTAR LAPORAN</button>
-      </div>
 
-      <div id="sectPerhimpunan" class="hidden space-y-4">
-        <textarea id="ucapan_gb" placeholder="Isi ucapan..." class="w-full p-3 border rounded-xl h-32"></textarea>
-        <button onclick="hantar()" id="btnSendP" class="w-full bg-blue-900 text-white py-4 rounded-xl font-bold">HANTAR LAPORAN</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="pageDash" class="max-w-2xl mx-auto p-4 hidden">
-    <div class="bg-white p-6 rounded-[2rem] shadow-xl">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="font-bold text-blue-900">REKOD PDF TERKINI</h2>
-        <button onclick="muatStatus()" class="text-blue-900 text-xl">🔄</button>
-      </div>
-      <div id="boxStatus" class="space-y-3"></div>
-    </div>
-  </div>
-
-  <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] bg-white shadow-2xl rounded-full p-2 flex border">
-    <button onclick="tukarPage('borang')" class="flex-1 py-3 text-sm font-bold text-blue-900">BORANG</button>
-    <button onclick="tukarPage('dash')" class="flex-1 py-3 text-sm font-bold text-gray-400">REKOD</button>
-  </nav>
-
-  <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxhFrcIJHYtijSq3atgnucqcUB9D8wKk-wlvvcFcc53G8D-Npz29DYHq4ovl5ew2OlDRw/exec";
-    let jenisLaporan = "Harian";
-
-    window.onload = async () => {
-      document.getElementById('tarikh').valueAsDate = new Date();
-      const r = await fetch(GAS_URL);
-      const d = await r.json();
-      const isi = (id, list) => {
-        const el = document.getElementById(id);
-        if(el) list.forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
-      };
-      isi("nama", d.nama); isi("disiplin", d.disiplin); isi("kelas", d.kelas);
-    };
-
-    function tukarTab(j) {
-      jenisLaporan = j;
-      document.getElementById('sectHarian').classList.toggle('hidden', j !== 'Harian');
-      document.getElementById('sectPerhimpunan').classList.toggle('hidden', j !== 'Perhimpunan');
-    }
-
-    function tukarPage(p) {
-      document.getElementById('pageBorang').classList.toggle('hidden', p !== 'borang');
-      document.getElementById('pageDash').classList.toggle('hidden', p !== 'dash');
-      if(p === 'dash') muatStatus();
-    }
-
-    async function muatStatus() {
-  const box = document.getElementById('boxStatus');
-  box.innerHTML = "<p class='text-center py-10 animate-pulse'>Menyusun Rekod Laporan...</p>";
-  
-  try {
-    const r = await fetch(GAS_URL + "?page=dashboard");
-    const d = await r.json();
-    
-    if (!d.files || d.files.length === 0) {
-      box.innerHTML = "<p class='text-center py-10 text-gray-400'>Tiada rekod ditemui.</p>";
-      return;
-    }
-
-    // Paparan mengikut format yang tuan minta
-    box.innerHTML = d.files.map(f => {
-      // Tentukan emoji berdasarkan jenis laporan dalam nama fail
-      const isPerhimpunan = f.name.includes("Perhimpunan");
-      const tajuk = isPerhimpunan ? "📢 LAPORAN PERHIMPUNAN" : "📢 LAPORAN HARIAN";
-      
-      return `
-        <div class="bg-white border-2 border-blue-900 rounded-3xl p-6 mb-6 shadow-md font-mono text-[11px] leading-relaxed">
-          <p class="font-bold text-blue-900 text-sm">${tajuk}</p>
-          <p class="text-gray-400">--------------------------</p>
-          
-          <div class="space-y-1 mt-2">
-            <p>📅 <b>TARIKH:</b> ${f.date_only || f.date}</p>
-            <p>🗓️ <b>MINGGU:</b> ${f.minggu || "-"}</p>
-            <p>👤 <b>PELAPOR:</b> ${f.pelapor || "-"}</p>
-            <p>👥 <b>KUMPULAN:</b> ${f.kumpulan || "-"}</p>
-          </div>
-
-          <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
-            ${isPerhimpunan ? `
-              <p>📝 <b>Laporan Lepas:</b> ${f.laporan_lepas || "-"}</p>
-              <p>🎤 <b>Ucapan Pentadbir:</b> ${f.ucapan_gb || "-"}</p>
-              <p>👤 <b>Pentadbir Berucap:</b> ${f.pentadbir || "-"}</p>
-              <p>📚 <b>Hadis 40:</b> ${f.hadis || "-"}</p>
-              <p>🌱 <b>Nilai Sivik:</b> ${f.sivik || "-"}</p>
-              <p>📌 <b>Catatan:</b> ${f.catatan || "-"}</p>
-            ` : `
-              <p>⚖️ <b>Disiplin:</b> ${f.disiplin || "-"}</p>
-              <p>🧹 <b>Kebersihan:</b> ${f.kebersihan || "-"}</p>
-              <p>🛡️ <b>Keselamatan:</b> ${f.keselamatan || "-"}</p>
-              <p>🍴 <b>Kantin:</b> ${f.kantin || "-"}</p>
-              <p>📖 <b>PdPC:</b> ${f.pdpc || "-"}</p>
-              <p>🚨 <b>Kes Kecemasan:</b> ${f.kecemasan || "Tiada"}</p>
-            `}
-          </div>
-
-          <div class="mt-4 flex justify-end">
-            <a href="${f.url}" target="_blank" class="bg-blue-900 text-white px-4 py-2 rounded-full font-bold text-[9px] hover:bg-blue-800 transition-all">
-              Buka PDF Penuh
-            </a>
-          </div>
+        <div class="flex bg-white p-1 rounded-xl shadow-sm">
+            <button onclick="setTab('Harian')" id="tH" class="flex-1 py-3 rounded-lg font-bold tab-active">HARIAN</button>
+            <button onclick="setTab('Perhimpunan')" id="tP" class="flex-1 py-3 rounded-lg font-bold text-gray-400">PERHIMPUNAN</button>
         </div>
-      `;
-    }).join('');
-    
-    document.getElementById('statTotal').innerText = d.total || 0;
-  } catch (e) {
-    box.innerHTML = "<p class='text-center py-10 text-red-500'>Ralat memuatkan data penuh.</p>";
-  }
-}
 
-    async function hantar() {
-      const data = { jenis_laporan: jenisLaporan, tarikh: document.getElementById('tarikh').value, nama: document.getElementById('nama').value };
-      await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-      alert("HANTAR BERJAYA!");
-      location.reload();
-    }
-  </script>
+        <div class="bg-white p-6 rounded-3xl shadow-xl space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="text-[10px] font-bold">TARIKH</label><input type="date" id="tarikh" class="w-full border p-2 rounded-lg bg-gray-50"></div>
+                <div><label class="text-[10px] font-bold">MINGGU</label><input type="number" id="minggu" class="w-full border p-2 rounded-lg bg-gray-50"></div>
+            </div>
+            <div><label class="text-[10px] font-bold">PELAPOR</label><select id="nama" class="w-full border p-2 rounded-lg bg-gray-50"></select></div>
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="text-[10px] font-bold">SESI</label><select id="sesi" class="w-full border p-2 rounded-lg bg-gray-50"></select></div>
+                <div><label class="text-[10px] font-bold">KUMPULAN</label><select id="kumpulan" class="w-full border p-2 rounded-lg bg-gray-50"></select></div>
+            </div>
+
+            <div id="sHarian" class="space-y-4 pt-4 border-t border-dashed">
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="text-[10px] font-bold">⚖️ DISIPLIN</label><select id="disiplin" class="w-full border p-2 rounded-lg"></select></div>
+                    <div><label class="text-[10px] font-bold">🧹 KEBERSIHAN</label><select id="kelas" class="w-full border p-2 rounded-lg"></select></div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="text-[10px] font-bold">🛡️ KESELAMATAN</label><select id="keselamatan" class="w-full border p-2 rounded-lg"></select></div>
+                    <div><label class="text-[10px] font-bold">🍴 KANTIN</label><select id="kantin" class="w-full border p-2 rounded-lg"></select></div>
+                </div>
+                <div><label class="text-[10px] font-bold">📖 PdPC</label><select id="pdpc" class="w-full border p-2 rounded-lg"></select></div>
+                <textarea id="kecemasan" placeholder="Kes Kecemasan (Jika ada)" class="w-full border p-3 rounded-xl h-20 bg-gray-50"></textarea>
+            </div>
+
+            <div id="sPerhimpunan" class="hidden space-y-4 pt-4 border-t border-dashed">
+                <textarea id="laporan_lepas" placeholder="Laporan Lepas..." class="w-full border p-3 rounded-xl h-20 bg-gray-50"></textarea>
+                <textarea id="ucapan_gb" placeholder="Ucapan Pentadbir..." class="w-full border p-3 rounded-xl h-24 bg-gray-50"></textarea>
+                <div><label class="text-[10px] font-bold">👤 PENTADBIR BERUCAP</label><select id="pentadbir_berucap" class="w-full border p-2 rounded-lg"></select></div>
+                <input type="text" id="hadis" placeholder="Hadis 40 Minggu Ini" class="w-full border p-2 rounded-lg bg-gray-50">
+                <div><label class="text-[10px] font-bold">🌱 NILAI SIVIK</label><select id="sivik" class="w-full border p-2 rounded-lg"></select></div>
+                <textarea id="catatan" placeholder="Catatan Tambahan..." class="w-full border p-3 rounded-xl h-20 bg-gray-50"></textarea>
+            </div>
+
+            <button onclick="hantar()" id="btnS" class="w-full bg-blue-900 text-white py-4 rounded-2xl font-bold shadow-lg">HANTAR LAPORAN</button>
+        </div>
+    </div>
+
+    <div id="rekodPage" class="max-w-md mx-auto p-4 hidden">
+        <h2 class="font-bold text-blue-900 mb-4 px-2">REKOD LAPORAN TERKINI</h2>
+        <div id="boxStatus" class="space-y-4"></div>
+    </div>
+
+    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-xs bg-white shadow-2xl rounded-full p-2 flex border">
+        <button onclick="nav('borang')" id="nb" class="flex-1 py-3 text-xs font-bold bg-blue-900 text-white rounded-full">ISI LAPORAN</button>
+        <button onclick="nav('rekod')" id="nr" class="flex-1 py-3 text-xs font-bold text-gray-400">LAPORAN PDF</button>
+    </nav>
+
+    <script>
+        const GAS_URL = "Ghttps://script.google.com/macros/s/AKfycbyTl1aRWcjKk3umuuD7s8N2N-uTEcZGiJxNZklFIFLISL8BDFf5IYpMiAbPk39Kd03c4Q/exec";
+        let tab = "Harian";
+
+        window.onload = async () => {
+            document.getElementById('tarikh').valueAsDate = new Date();
+            const r = await fetch(GAS_URL);
+            const d = await r.json();
+            const isi = (id, list) => {
+                const el = document.getElementById(id);
+                if(el) { el.innerHTML = '<option value="">-- PILIH --</option>'; list.forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`); }
+            };
+            isi("nama", d.nama); isi("sesi", d.sesi); isi("kumpulan", d.kumpulan);
+            isi("disiplin", d.disiplin); isi("kelas", d.kelas); isi("keselamatan", d.keselamatan);
+            isi("kantin", d.kantin); isi("pdpc", d.pdpc); isi("pentadbir_berucap", d.pentadbir_berucap); isi("sivik", d.sivik);
+        };
+
+        function setTab(t) {
+            tab = t;
+            document.getElementById('sHarian').classList.toggle('hidden', t !== 'Harian');
+            document.getElementById('sPerhimpunan').classList.toggle('hidden', t !== 'Perhimpunan');
+            document.getElementById('tH').className = t === 'Harian' ? "flex-1 py-3 rounded-lg font-bold tab-active" : "flex-1 py-3 rounded-lg font-bold text-gray-400";
+            document.getElementById('tP').className = t === 'Perhimpunan' ? "flex-1 py-3 rounded-lg font-bold tab-active" : "flex-1 py-3 rounded-lg font-bold text-gray-400";
+        }
+
+        function nav(p) {
+            document.getElementById('borangPage').classList.toggle('hidden', p !== 'borang');
+            document.getElementById('rekodPage').classList.toggle('hidden', p !== 'rekod');
+            document.getElementById('nb').className = p === 'borang' ? "flex-1 py-3 text-xs font-bold bg-blue-900 text-white rounded-full" : "flex-1 py-3 text-xs font-bold text-gray-400";
+            document.getElementById('nr').className = p === 'rekod' ? "flex-1 py-3 text-xs font-bold bg-blue-900 text-white rounded-full" : "flex-1 py-3 text-xs font-bold text-gray-400";
+            if(p === 'rekod') muatStatus();
+        }
+
+        async function muatStatus() {
+            const b = document.getElementById('boxStatus');
+            b.innerHTML = "<p class='text-center p-10 opacity-50'>Memuatkan...</p>";
+            const r = await fetch(GAS_URL + "?page=dashboard");
+            const d = await r.json();
+            b.innerHTML = d.files.map(f => {
+                const isH = f.type === "Harian";
+                return `
+                <div class="bg-white border-l-8 ${isH ? 'border-blue-900' : 'border-green-600'} rounded-2xl p-5 shadow-sm card-report text-[10px]">
+<p class="font-bold text-blue-900 text-xs">📢 LAPORAN ${f.type.toUpperCase()}</p>
+--------------------------
+📅 TARIKH: ${new Date(f.date).toLocaleDateString('en-GB')}
+🗓️ MINGGU: ${f.minggu}
+👤 PELAPOR: ${f.nama}
+👥 SESI: ${f.sesi}
+👥 KUMPULAN: ${f.kumpulan}
+
+${isH ? 
+`⚖️ Disiplin: ${f.details.disiplin}
+🧹 Kelas: ${f.details.kelas}
+🛡️ Keselamatan: ${f.details.keselamatan}
+🍴 Kantin: ${f.details.kantin}
+📖 PdPC: ${f.details.pdpc}
+🚨 Kes Kecemasan: ${f.details.kecemasan || 'Tiada'}` : 
+`📝 Laporan Lepas: ${f.details.laporan_lepas}
+🎤 Ucapan Pentadbir: ${f.details.ucapan_gb}
+👤 Pentadbir Berucap: ${f.details.pentadbir}
+📚 Hadis 40: ${f.details.hadis}
+🌱 Nilai Sivik: ${f.details.sivik}
+📌 Catatan: ${f.details.catatan}`}
+                </div>`;
+            }).join('');
+        }
+
+        async function hantar() {
+            const b = document.getElementById('btnS');
+            b.disabled = true; b.innerText = "MENGHANTAR...";
+            const d = {
+                jenis_laporan: tab, tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
+                nama: document.getElementById('nama').value, sesi: document.getElementById('sesi').value, kumpulan: document.getElementById('kumpulan').value
+            };
+            if(tab === "Harian") {
+                Object.assign(d, { disiplin: document.getElementById('disiplin').value, kelas: document.getElementById('kelas').value, keselamatan: document.getElementById('keselamatan').value, kantin: document.getElementById('kantin').value, pdpc: document.getElementById('pdpc').value, kecemasan: document.getElementById('kecemasan').value });
+            } else {
+                Object.assign(d, { laporan_lepas: document.getElementById('laporan_lepas').value, ucapan_gb: document.getElementById('ucapan_gb').value, pentadbir_berucap: document.getElementById('pentadbir_berucap').value, hadis: document.getElementById('hadis').value, sivik: document.getElementById('sivik').value, catatan: document.getElementById('catatan').value });
+            }
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(d) });
+            alert("✅ BERJAYA!");
+            location.reload();
+        }
+    </script>
 </body>
 </html>
