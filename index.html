@@ -29,7 +29,7 @@
     <header class="bg-sksr p-8 rounded-[3rem] text-white text-center shadow-2xl relative overflow-hidden">
       <img src="https://raw.githubusercontent.com/azizahshariff/laporangurubertugas/refs/heads/main/logo_sksr.png" alt="Logo SKSR" class="w-20 h-20 mx-auto mb-4 drop-shadow-2xl">
       <h1 class="text-2xl font-extrabold tracking-tighter uppercase">SK SIMPANG RENGAM</h1>
-      <p class="text-[9px] font-bold opacity-80 tracking-[0.3em] mt-1 uppercase">Sistem Laporan Guru Bertugas</p>
+      <p class="text-[9px] font-bold opacity-80 tracking-[0.3em] mt-1 uppercase">Sistem Laporan Digital Guru Bertugas</p>
     </header>
 
     <div class="flex bg-white rounded-2xl p-1.5 shadow-sm font-bold text-[10px] uppercase border border-gray-100">
@@ -58,16 +58,16 @@
             <div><label>🍴 Kantin</label><select id="kantin"></select></div>
         </div>
         <div><label>📖 PdPC</label><select id="pdpc"></select></div>
-        <div><label>🚨 Kes Kecemasan</label><textarea id="kecemasan" class="h-24" placeholder="-"></textarea></div>
+        <div><label>🚨 Kes Kecemasan</label><textarea id="kecemasan" class="h-24" placeholder="Nyatakan rincian kes jika ada..."></textarea></div>
       </div>
 
       <div id="sectPerhimpunan" class="hidden space-y-4 pt-4 border-t border-dashed">
-        <div><label>📝 Laporan Lepas</label><textarea id="laporan_lepas" class="h-20"></textarea></div>
-        <div><label>🎤 Ucapan Pentadbir</label><textarea id="ucapan_gb" class="h-24"></textarea></div>
+        <div><label>📝 Laporan Lepas</label><textarea id="laporan_lepas" class="h-20" placeholder="Rujuk laporan perhimpunan sebelumnya..."></textarea></div>
+        <div><label>🎤 Ucapan Pentadbir</label><textarea id="ucapan_gb" class="h-24" placeholder="Isi ucapan penting pentadbir..."></textarea></div>
         <div><label>🎤 Pentadbir Berucap</label><select id="pentadbir_berucap"></select></div>
-        <div><label>📚 Hadis 40</label><input type="text" id="hadis"></div>
+        <div><label>📚 Hadis 40</label><input type="text" id="hadis" placeholder="Info atau Hadis 40 Minggu Ini"></div>
         <div><label>🌱 Nilai Sivik</label><select id="sivik"></select></div>
-        <div><label>📌 Catatan</label><textarea id="catatan" class="h-20"></textarea></div>
+        <div><label>📌 Catatan</label><textarea id="catatan" class="h-20" placeholder="Catatan tambahan jika ada..."></textarea></div>
       </div>
 
       <button onclick="hantar()" id="btnSend" class="w-full bg-blue-900 text-white font-extrabold py-5 rounded-2xl shadow-lg uppercase tracking-widest text-xs active:scale-95 transition-all mt-4">Hantar Laporan</button>
@@ -84,29 +84,30 @@
   <div id="pageDash" class="max-w-4xl mx-auto p-4 hidden animate-fade-in">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
       <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-        <p class="text-[9px] font-black text-gray-400 uppercase mb-2">Total Fail</p>
+        <p class="text-[9px] font-black text-gray-400 uppercase mb-2">Total Fail PDF</p>
         <p id="statTotal" class="text-2xl font-black text-blue-900">0</p>
       </div>
       <div id="cardHarian" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
         <p class="text-[9px] font-black text-gray-400 uppercase mb-2">Harian</p>
-        <p id="statHarian" class="text-[10px] font-black">SEMAK</p>
+        <p id="statHarian" class="text-[10px] font-black text-green-600 tracking-tighter">AKTIF</p>
       </div>
       <div id="cardPerhimpunan" class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
         <p class="text-[9px] font-black text-gray-400 uppercase mb-2">Mingguan</p>
-        <p id="statPerhimpunan" class="text-[10px] font-black">SEMAK</p>
+        <p id="statPerhimpunan" class="text-[10px] font-black text-green-600 tracking-tighter">AKTIF</p>
       </div>
       <div class="bg-white p-5 rounded-3xl shadow-sm border-b-4 border-cyan-500">
-        <p class="text-[9px] font-black text-gray-400 uppercase mb-2">Telegram</p>
-        <p class="text-[10px] font-black text-cyan-600">AKTIF</p>
+        <p class="text-[9px] font-black text-gray-400 uppercase mb-2">Telegram Bot</p>
+        <p class="text-[10px] font-black text-cyan-600 tracking-tighter">ONLINE</p>
       </div>
     </div>
 
     <div class="bg-white p-8 rounded-[3rem] shadow-2xl border border-blue-50">
       <div class="flex justify-between items-center mb-6">
-        <h3 class="font-black text-xl text-blue-900 italic">REKOD PDF</h3>
-        <button onclick="muatStatus()" class="bg-blue-900 text-white p-2 rounded-xl">🔄</button>
+        <h3 class="font-black text-xl text-blue-900 italic uppercase">Arsip Rekod PDF</h3>
+        <button onclick="muatStatus()" class="bg-blue-900 text-white p-2 rounded-xl active:rotate-180 transition-all duration-500">🔄</button>
       </div>
-      <div id="boxStatus" class="space-y-3"></div>
+      <div id="boxStatus" class="space-y-3">
+         </div>
     </div>
 
     <footer class="text-center py-10">
@@ -119,41 +120,58 @@
 
   <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[80%] max-w-xs bg-white/90 backdrop-blur shadow-2xl rounded-[2.5rem] p-1.5 flex z-[100] border border-gray-100">
     <button onclick="tukarPage('borang')" id="navB" class="flex-1 py-4 rounded-[2rem] font-black text-[10px] bg-blue-900 text-white shadow-lg">📝 BORANG</button>
-    <button onclick="tukarPage('dash')" id="navD" class="flex-1 py-4 rounded-[2rem] font-black text-[10px] text-gray-400">📊 STATUS</button>
+    <button onclick="tukarPage('dash')" id="navD" class="flex-1 py-4 rounded-[2rem] font-black text-[10px] text-gray-400">📊 REKOD</button>
   </nav>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxxdcOoxtYiCTjUuCmRpCPqgrlp_LjXX1aJxB9RRIBmER_AQdG9pUm_ipgDrNFpD_uppw/exec";
+    // --- SILA TUKAR URL DI BAWAH ---
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwVlmuwtEPP9VDJnciPOiyv9YlfDfbMKqlYtZvg_41jdCoA8ew6GB_M9kjqi7URGR6JBw/exec";
+    
     let jenisLaporan = "Harian";
 
-    // AMBIL DATA DARI TAB TETAPAN SPREADSHEET
+    // 1. AUTO LOAD DATA DARI TETAPAN
     window.onload = async () => {
       document.getElementById('tarikh').valueAsDate = new Date();
       try {
         const r = await fetch(GAS_URL);
         const d = await r.json();
+        
         const isi = (id, list) => {
           const el = document.getElementById(id);
           if (el && list) {
-            el.innerHTML = "";
-            list.forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
+            el.innerHTML = '<option value="">-- PILIH --</option>';
+            list.forEach(v => {
+              if(v) el.innerHTML += `<option value="${v}">${v}</option>`;
+            });
           }
         };
-        isi("nama", d.nama); isi("sesi", d.sesi); isi("kumpulan", d.kumpulan);
-        isi("disiplin", d.disiplin); isi("kelas", d.kelas); isi("keselamatan", d.keselamatan);
-        isi("kantin", d.kantin); isi("pdpc", d.pdpc); isi("pentadbir_berucap", d.pentadbir_berucap);
+
+        isi("nama", d.nama); 
+        isi("sesi", d.sesi); 
+        isi("kumpulan", d.kumpulan);
+        isi("disiplin", d.disiplin); 
+        isi("kelas", d.kelas); 
+        isi("keselamatan", d.keselamatan);
+        isi("kantin", d.kantin); 
+        isi("pdpc", d.pdpc); 
+        isi("pentadbir_berucap", d.pentadbir_berucap);
         isi("sivik", d.sivik);
-      } catch (e) { console.log("Gagal muat tetapan"); }
+
+      } catch (e) { 
+        console.error("Gagal muat tetapan:", e);
+      }
     };
 
+    // 2. FUNGSI TUKAR TAB
     function tukarTab(j) {
       jenisLaporan = j;
       document.getElementById('sectHarian').classList.toggle('hidden', j !== 'Harian');
       document.getElementById('sectPerhimpunan').classList.toggle('hidden', j !== 'Perhimpunan');
-      document.getElementById('btnH').className = j === 'Harian' ? "flex-1 py-4 tab-active" : "flex-1 py-4 text-gray-400";
-      document.getElementById('btnP').className = j === 'Perhimpunan' ? "flex-1 py-4 tab-active" : "flex-1 py-4 text-gray-400";
+      document.getElementById('btnH').className = j === 'Harian' ? "flex-1 py-4 tab-active transition-all" : "flex-1 py-4 text-gray-400 transition-all";
+      document.getElementById('btnP').className = j === 'Perhimpunan' ? "flex-1 py-4 tab-active transition-all" : "flex-1 py-4 text-gray-400 transition-all";
     }
 
+    // 3. FUNGSI TUKAR PAGE
     function tukarPage(p) {
       const isB = p === 'borang';
       document.getElementById('pageBorang').classList.toggle('hidden', !isB);
@@ -163,78 +181,74 @@
       if(!isB) muatStatus();
     }
 
+    // 4. FUNGSI DASHBOARD / STATUS PDF
     async function muatStatus() {
       const box = document.getElementById('boxStatus');
-      box.innerHTML = "<p class='text-center text-[10px] font-bold py-10'>MENYUSUN DATA...</p>";
+      box.innerHTML = "<p class='text-center text-[10px] font-bold py-10 text-blue-900 animate-pulse uppercase'>Menyusun Arkib PDF...</p>";
       try {
         const r = await fetch(GAS_URL + "?page=dashboard");
         const d = await r.json();
-        document.getElementById('statTotal').innerText = d.total;
-        document.getElementById('statHarian').innerText = d.harian;
-        document.getElementById('statPerhimpunan').innerText = d.perhimpunan;
+        document.getElementById('statTotal').innerText = d.total || 0;
         
-        box.innerHTML = d.files.map(f => `
-          <div class="flex items-center bg-gray-50 p-4 rounded-2xl border border-gray-100">
-            <div class="flex-grow min-w-0">
-              <p class="text-[11px] font-black text-blue-900 truncate">${f.name}</p>
-              <p class="text-[9px] text-gray-400 font-bold">${f.date}</p>
+        if (d.files && d.files.length > 0) {
+          box.innerHTML = d.files.map(f => `
+            <div class="flex items-center bg-gray-50 p-4 rounded-2xl border border-gray-100 hover:bg-blue-50 transition-colors group">
+              <div class="flex-grow min-w-0">
+                <p class="text-[11px] font-black text-blue-900 truncate uppercase">${f.name}</p>
+                <p class="text-[9px] text-gray-400 font-bold tracking-widest">${f.date}</p>
+              </div>
+              <a href="${f.url}" target="_blank" class="shrink-0 bg-blue-900 text-white px-4 py-2 rounded-xl text-[9px] font-black ml-2 shadow-md hover:scale-105 transition-transform">LIHAT PDF</a>
             </div>
-            <a href="${f.url}" target="_blank" class="shrink-0 bg-blue-900 text-white px-4 py-2 rounded-xl text-[9px] font-black ml-2">BUKA</a>
-          </div>
-        `).join('');
-      } catch (e) { box.innerHTML = "Ralat Dashboard"; }
+          `).join('');
+        } else {
+          box.innerHTML = "<p class='text-center text-[10px] py-10 text-gray-400 font-bold'>TIADA REKOD DIJUMPAI</p>";
+        }
+      } catch (e) { box.innerHTML = "<p class='text-center text-[10px] py-10 text-red-500 font-bold'>RALAT SISTEM DASHBOARD</p>"; }
     }
 
+    // 5. FUNGSI HANTAR LAPORAN
     async function hantar() {
-  const b = document.getElementById('btnSend');
-  
-  // Pastikan nama pelapor dipilih
-  if(!document.getElementById('nama').value) {
-    return alert("⚠️ Sila pilih Nama Pelapor!");
-  }
+      const b = document.getElementById('btnSend');
+      if(!document.getElementById('nama').value) return alert("⚠️ Sila pilih Nama Pelapor!");
 
-  b.disabled = true;
-  b.innerText = "SEDANG DIHANTAR...";
-  
-  // Ambil semua data dari input/textarea
-  const data = {
-    jenis_laporan: jenisLaporan,
-    tarikh: document.getElementById('tarikh').value,
-    minggu: document.getElementById('minggu').value,
-    nama: document.getElementById('nama').value,
-    sesi: document.getElementById('sesi').value,
-    kumpulan: document.getElementById('kumpulan').value,
-    
-    // Data Laporan Harian
-    disiplin: document.getElementById('disiplin').value || "",
-    kelas: document.getElementById('kelas').value || "",
-    keselamatan: document.getElementById('keselamatan').value || "",
-    kantin: document.getElementById('kantin').value || "",
-    pdpc: document.getElementById('pdpc').value || "",
-    kecemasan: document.getElementById('kecemasan').value || "",
-    
-    // Data Laporan Perhimpunan (Pastikan ID ini sama dengan ID di textarea)
-    laporan_lepas: document.getElementById('laporan_lepas').value || "",
-    ucapan_gb: document.getElementById('ucapan_gb').value || "",
-    pentadbir_berucap: document.getElementById('pentadbir_berucap').value || "",
-    hadis: document.getElementById('hadis').value || "",
-    sivik: document.getElementById('sivik').value || "",
-    catatan: document.getElementById('catatan').value || ""
-  };
+      b.disabled = true;
+      b.innerText = "MENYIMPAN DATA...";
+      
+      const data = {
+        jenis_laporan: jenisLaporan,
+        tarikh: document.getElementById('tarikh').value,
+        minggu: document.getElementById('minggu').value,
+        nama: document.getElementById('nama').value,
+        sesi: document.getElementById('sesi').value,
+        kumpulan: document.getElementById('kumpulan').value,
+        disiplin: document.getElementById('disiplin').value || "",
+        kelas: document.getElementById('kelas').value || "",
+        keselamatan: document.getElementById('keselamatan').value || "",
+        kantin: document.getElementById('kantin').value || "",
+        pdpc: document.getElementById('pdpc').value || "",
+        kecemasan: document.getElementById('kecemasan').value || "",
+        laporan_lepas: document.getElementById('laporan_lepas').value || "",
+        ucapan_gb: document.getElementById('ucapan_gb').value || "",
+        pentadbir_berucap: document.getElementById('pentadbir_berucap').value || "",
+        hadis: document.getElementById('hadis').value || "",
+        sivik: document.getElementById('sivik').value || "",
+        catatan: document.getElementById('catatan').value || ""
+      };
 
-  try {
-    // Hantar ke Google Apps Script
-    await fetch(GAS_URL, { 
-      method: "POST", 
-      mode: "no-cors", 
-      body: JSON.stringify(data) 
-    });
-    
-    alert("✅ LAPORAN BERJAYA DIHANTAR!");
-    location.reload(); // Refresh borang selepas berjaya
-  } catch (e) {
-    alert("❌ GAGAL: " + e);
-    b.disabled = false;
-    b.innerText = "Hantar Laporan";
-  }
-}
+      try {
+        await fetch(GAS_URL, { 
+          method: "POST", 
+          mode: "no-cors", 
+          body: JSON.stringify(data) 
+        });
+        alert("✅ LAPORAN BERJAYA DIHANTAR!");
+        location.reload();
+      } catch (e) {
+        alert("❌ GAGAL: " + e);
+        b.disabled = false;
+        b.innerText = "Hantar Laporan";
+      }
+    }
+  </script>
+</body>
+</html>
