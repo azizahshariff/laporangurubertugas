@@ -88,104 +88,146 @@
     </nav>
 
     <script>
-        // PENTING: Gantikan URL ini dengan Web App URL dari Deployment terbaru anda!
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby62YRp6uzhD_dAqwuhjrg1JVjLOQBst41LHcyOwPbUl7CXdNkFz5-BSMehcAqU4adAkQ/exec";
-        let tab = "Harian";
+    // 1. TETAPAN URL (Sila pastikan URL ini betul)
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzYAPvp-4NniXSMU3bCgXorvAUbamrZE2jBq2z6POWx-XuBJgAtXbEEYhSpqGSFs498Xw/exec";
+    
+    let tab = "Harian";
+    let dataRekod = []; // Pembolehubah global untuk menyimpan data laporan
 
-        window.onload = async () => {
-            document.getElementById('tarikh').valueAsDate = new Date();
-            try {
-                const r = await fetch(GAS_URL);
-                const d = await r.json();
-                const isi = (id, list) => {
-                    const el = document.getElementById(id);
-                    if(el && list) { 
-                        el.innerHTML = '<option value="">-- SILA PILIH --</option>'; 
-                        list.forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`); 
-                    }
-                };
-                isi("nama", d.nama); isi("sesi", d.sesi); isi("kumpulan", d.kumpulan);
-                isi("disiplin", d.disiplin); isi("kelas", d.kelas); isi("keselamatan", d.keselamatan);
-                isi("kantin", d.kantin); isi("pdpc", d.pdpc); isi("pentadbir_berucap", d.pentadbir_berucap); isi("sivik", d.sivik);
-            } catch(e) { console.error("Data Tetapan gagal dimuatkan."); }
-        };
-
-        function setTab(t) {
-            tab = t;
-            document.getElementById('sHarian').classList.toggle('hidden', t !== 'Harian');
-            document.getElementById('sPerhimpunan').classList.toggle('hidden', t !== 'Perhimpunan');
-            document.getElementById('tH').className = t === 'Harian' ? "flex-1 py-3 rounded-xl font-bold tab-active" : "flex-1 py-3 rounded-xl font-bold text-gray-400";
-            document.getElementById('tP').className = t === 'Perhimpunan' ? "flex-1 py-3 rounded-xl font-bold tab-active" : "flex-1 py-3 rounded-xl font-bold text-gray-400";
-        }
-
-        function nav(p) {
-            document.getElementById('borangPage').classList.toggle('hidden', p !== 'borang');
-            document.getElementById('rekodPage').classList.toggle('hidden', p !== 'rekod');
-            document.getElementById('nb').className = p === 'borang' ? "flex-1 py-3 text-[10px] font-black bg-blue-900 text-white rounded-full" : "flex-1 py-3 text-[10px] font-black text-gray-400";
-            document.getElementById('nr').className = p === 'rekod' ? "flex-1 py-3 text-[10px] font-black bg-blue-900 text-white rounded-full" : "flex-1 py-3 text-[10px] font-black text-gray-400";
-            if(p === 'rekod') muatStatus();
-        }
-
-        async function muatStatus() {
-            const b = document.getElementById('boxStatus');
-            b.innerHTML = "<p class='text-center p-10 text-xs opacity-50 font-bold'>Sedang menyusun rekod...</p>";
-            try {
-                const r = await fetch(GAS_URL + "?page=dashboard");
-                const d = await r.json();
-                b.innerHTML = d.files.map(f => {
-                    const isH = f.type === "Harian";
-                    return `
-                    <div class="bg-white border-l-[10px] ${isH ? 'border-blue-900' : 'border-emerald-500'} rounded-3xl p-6 shadow-sm card-report text-[11px] leading-relaxed">
-                        <p class="font-black text-blue-900 text-sm mb-1 uppercase tracking-tighter">📢 LAPORAN ${f.type.toUpperCase()}</p>
-                        <p class="text-gray-300 mb-2">----------------------------------</p>
-                        <p>📅 <b>TARIKH:</b> ${new Date(f.date).toLocaleDateString('en-GB')}</p>
-                        <p>🗓️ <b>MINGGU:</b> ${f.minggu}</p>
-                        <p>👤 <b>PELAPOR:</b> ${f.nama}</p>
-                        <p>👥 <b>SESI:</b> ${f.sesi} | <b>KUMPULAN:</b> ${f.kumpulan}</p>
-                        <div class="mt-4 pt-4 border-t border-dashed border-gray-100">
-                            ${isH ? 
-                            `⚖️ <b>Disiplin:</b> ${f.details.disiplin}<br>🧹 <b>Kelas:</b> ${f.details.kelas}<br>🛡️ <b>Keselamatan:</b> ${f.details.keselamatan}<br>🍴 <b>Kantin:</b> ${f.details.kantin}<br>📖 <b>PdPC:</b> ${f.details.pdpc}<br>🚨 <b>Kecemasan:</b> ${f.details.kecemasan || 'Tiada'}` : 
-                            `📝 <b>Laporan Lepas:</b> ${f.details.laporan_lepas}<br>🎤 <b>Ucapan GB:</b> ${f.details.ucapan_gb}<br>👤 <b>Pentadbir:</b> ${f.details.pentadbir}<br>📚 <b>Hadis 40:</b> ${f.details.hadis}<br>🌱 <b>Nilai Sivik:</b> ${f.details.sivik}<br>📌 <b>Catatan:</b> ${f.details.catatan}`}
-                        </div>
-                    </div>`;
-                }).join('');
-            } catch(e) { b.innerHTML = "<p class='text-center p-10 text-red-400'>Ralat memuatkan rekod.</p>"; }
-        }
-
-        async function hantar() {
-            const b = document.getElementById('btnS');
-            const data = {
-                jenis_laporan: tab, tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
-                nama: document.getElementById('nama').value, sesi: document.getElementById('sesi').value, kumpulan: document.getElementById('kumpulan').value
+    // 2. FUNGSI MUAT TURUN TETAPAN (NAMA, SESI, DLL)
+    window.onload = async () => {
+        document.getElementById('tarikh').valueAsDate = new Date();
+        try {
+            const r = await fetch(GAS_URL);
+            const d = await r.json();
+            const isi = (id, list) => {
+                const el = document.getElementById(id);
+                if(el && list) { 
+                    el.innerHTML = '<option value="">-- SILA PILIH --</option>'; 
+                    list.forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`); 
+                }
             };
-            
-            if(!data.nama || !data.minggu) return alert("Sila isi Nama Pelapor dan Minggu!");
+            isi("nama", d.nama); isi("sesi", d.sesi); isi("kumpulan", d.kumpulan);
+            isi("disiplin", d.disiplin); isi("kelas", d.kelas); isi("keselamatan", d.keselamatan);
+            isi("kantin", d.kantin); isi("pdpc", d.pdpc); isi("pentadbir_berucap", d.pentadbir_berucap); isi("sivik", d.sivik);
+        } catch(e) { console.error("Data Tetapan gagal dimuatkan."); }
+    };
 
-            b.disabled = true; b.innerText = "MENGHANTAR LAPORAN...";
+    // 3. FUNGSI TUKAR TAB (HARIAN / PERHIMPUNAN)
+    function setTab(t) {
+        tab = t;
+        document.getElementById('sHarian').classList.toggle('hidden', t !== 'Harian');
+        document.getElementById('sPerhimpunan').classList.toggle('hidden', t !== 'Perhimpunan');
+        document.getElementById('tH').className = t === 'Harian' ? "flex-1 py-3 rounded-xl font-bold tab-active" : "flex-1 py-3 rounded-xl font-bold text-gray-400";
+        document.getElementById('tP').className = t === 'Perhimpunan' ? "flex-1 py-3 rounded-xl font-bold tab-active" : "flex-1 py-3 rounded-xl font-bold text-gray-400";
+    }
 
-            if(tab === "Harian") {
-                Object.assign(data, {
-                    disiplin: document.getElementById('disiplin').value, kelas: document.getElementById('kelas').value, 
-                    keselamatan: document.getElementById('keselamatan').value, kantin: document.getElementById('kantin').value, 
-                    pdpc: document.getElementById('pdpc').value, kecemasan: document.getElementById('kecemasan').value
-                });
-            } else {
-                Object.assign(data, {
-                    laporan_lepas: document.getElementById('laporan_lepas').value, ucapan_gb: document.getElementById('ucapan_gb').value, 
-                    pentadbir_berucap: document.getElementById('pentadbir_berucap').value, hadis: document.getElementById('hadis').value, 
-                    sivik: document.getElementById('sivik').value, catatan: document.getElementById('catatan').value
-                });
-            }
+    // 4. FUNGSI NAVIGASI BAWAH (ISI LAPORAN / LAPORAN PDF)
+    function nav(p) {
+        document.getElementById('borangPage').classList.toggle('hidden', p !== 'borang');
+        document.getElementById('rekodPage').classList.toggle('hidden', p !== 'rekod');
+        
+        // Kemaskini warna butang navigasi
+        document.getElementById('nb').className = p === 'borang' ? "flex-1 py-3 text-[10px] font-black bg-blue-900 text-white rounded-full transition-all" : "flex-1 py-3 text-[10px] font-black text-gray-400 transition-all";
+        document.getElementById('nr').className = p === 'rekod' ? "flex-1 py-3 text-[10px] font-black bg-blue-900 text-white rounded-full transition-all" : "flex-1 py-3 text-[10px] font-black text-gray-400 transition-all";
+        
+        // Panggil data rekod PDF bila klik tab rekod
+        if(p === 'rekod') muatStatus();
+    }
 
-            try {
-                await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-                alert("✅ LAPORAN BERJAYA DIHANTAR KE GOOGLE SHEETS, TELEGRAM & PDF!");
-                location.reload();
-            } catch(e) {
-                alert("Ralat penghantaran!");
-                b.disabled = false; b.innerText = "HANTAR LAPORAN";
-            }
+    // 5. FUNGSI AMBIL DATA PDF DARI GOOGLE SCRIPT
+    async function muatStatus() {
+        const b = document.getElementById('boxStatus');
+        b.innerHTML = `
+            <div class='text-center p-10'>
+                <div class='animate-spin inline-block w-8 h-8 border-4 border-blue-900 border-t-transparent rounded-full'></div>
+                <p class='mt-2 text-[10px] font-bold text-blue-900 uppercase tracking-widest'>Menyusun data...</p>
+            </div>`;
+        
+        try {
+            const r = await fetch(GAS_URL + "?page=dashboard");
+            const d = await r.json();
+            dataRekod = d.files; 
+            tapisRekod('Harian'); 
+        } catch(e) {
+            b.innerHTML = "<p class='text-center p-10 text-red-500 text-xs italic'>Gagal memuatkan rekod.</p>";
         }
-    </script>
+    }
+
+    // 6. FUNGSI PAPARAN SENARAI PDF (GAYA DASHBOARD)
+    function tapisRekod(jenis) {
+        const b = document.getElementById('boxStatus');
+        const filtered = dataRekod.filter(f => f.type === jenis);
+
+        let html = `
+            <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-2xl">
+                <button onclick="tapisRekod('Harian')" class="flex-1 py-3 rounded-xl text-[10px] font-black transition-all ${jenis === 'Harian' ? 'bg-blue-900 text-white shadow-lg' : 'text-gray-400'}">REKOD HARIAN</button>
+                <button onclick="tapisRekod('Perhimpunan')" class="flex-1 py-3 rounded-xl text-[10px] font-black transition-all ${jenis === 'Perhimpunan' ? 'bg-blue-900 text-white shadow-lg' : 'text-gray-400'}">REKOD PERHIMPUNAN</button>
+            </div>
+            <div class="grid grid-cols-1 gap-3">
+        `;
+
+        if (filtered.length === 0) {
+            html += `<div class="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                        <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest text-center">Tiada rekod ${jenis} dijumpai</p>
+                     </div>`;
+        } else {
+            filtered.forEach(f => {
+                const tgl = new Date(f.date).toLocaleDateString('ms-MY', { day:'2-digit', month:'2-digit', year:'numeric' });
+                html += `
+                    <div class="bg-white p-5 rounded-[2rem] shadow-sm border border-gray-50 flex items-center justify-between transition-all">
+                        <div>
+                            <p class="text-[9px] font-black text-blue-900 uppercase tracking-tighter opacity-50">MINGGU ${f.minggu}</p>
+                            <p class="text-sm font-extrabold text-gray-800">${tgl}</p>
+                            <p class="text-[10px] font-semibold text-gray-400 mt-0.5 uppercase tracking-tighter">${f.nama}</p>
+                        </div>
+                        <button onclick="window.open('${f.url || '#'}', '_blank')" 
+                                class="bg-blue-900 text-white p-3 px-5 rounded-2xl text-[9px] font-black shadow-blue-100 shadow-xl active:scale-95 transition-all">
+                            PDF
+                        </button>
+                    </div>
+                `;
+            });
+        }
+        html += `</div>`;
+        b.innerHTML = html;
+    }
+
+    // 7. FUNGSI HANTAR LAPORAN (POST DATA)
+    async function hantar() {
+        const b = document.getElementById('btnS');
+        const data = {
+            jenis_laporan: tab, tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
+            nama: document.getElementById('nama').value, sesi: document.getElementById('sesi').value, kumpulan: document.getElementById('kumpulan').value
+        };
+        
+        if(!data.nama || !data.minggu) return alert("Sila isi Nama Pelapor dan Minggu!");
+
+        b.disabled = true; b.innerText = "MENGHANTAR LAPORAN...";
+
+        if(tab === "Harian") {
+            Object.assign(data, {
+                disiplin: document.getElementById('disiplin').value, kelas: document.getElementById('kelas').value, 
+                keselamatan: document.getElementById('keselamatan').value, kantin: document.getElementById('kantin').value, 
+                pdpc: document.getElementById('pdpc').value, kecemasan: document.getElementById('kecemasan').value
+            });
+        } else {
+            Object.assign(data, {
+                laporan_lepas: document.getElementById('laporan_lepas').value, ucapan_gb: document.getElementById('ucapan_gb').value, 
+                pentadbir_berucap: document.getElementById('pentadbir_berucap').value, hadis: document.getElementById('hadis').value, 
+                sivik: document.getElementById('sivik').value, catatan: document.getElementById('catatan').value
+            });
+        }
+
+        try {
+            await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+            alert("✅ LAPORAN BERJAYA DIHANTAR KE GOOGLE SHEETS, TELEGRAM & PDF!");
+            location.reload();
+        } catch(e) {
+            alert("Ralat penghantaran!");
+            b.disabled = false; b.innerText = "HANTAR LAPORAN";
+        }
+    }
+</script>
 </body>
 </html>
