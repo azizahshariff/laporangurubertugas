@@ -21,11 +21,11 @@
              class="w-24 h-24 mx-auto mb-4 drop-shadow-2xl object-contain"
              onerror="this.src='https://via.placeholder.com/100?text=SKSR'">
         <h1 class="text-xl font-extrabold uppercase tracking-tight">SK SIMPANG RENGAM</h1>
-        <p class="text-[9px] font-bold opacity-70 tracking-[0.3em] mt-1">SISTEM PENGURUSAN LAPORAN GURU BERTUGAS)</p>
+        <p class="text-[9px] font-bold opacity-70 tracking-[0.3em] mt-1">SISTEM PENGURUSAN LAPORAN GURU BERTUGAS</p>
     </header>
 
     <div class="max-w-md mx-auto px-4 -mt-8">
-        <div class="flex bg-white p-1.5 rounded-2xl shadow-lg mb-6 border border-gray-100">
+        <div id="tabAtas" class="flex bg-white p-1.5 rounded-2xl shadow-lg mb-6 border border-gray-100">
             <button onclick="setTab('Harian')" id="tH" class="flex-1 py-3 rounded-xl font-bold transition-all tab-active">HARIAN</button>
             <button onclick="setTab('Perhimpunan')" id="tP" class="flex-1 py-3 rounded-xl font-bold transition-all text-gray-400">PERHIMPUNAN</button>
         </div>
@@ -88,13 +88,11 @@
     </nav>
 
     <script>
-    // 1. TETAPAN URL (Sila pastikan URL ini betul)
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzYAPvp-4NniXSMU3bCgXorvAUbamrZE2jBq2z6POWx-XuBJgAtXbEEYhSpqGSFs498Xw/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzYcyas5f-neXx34SUwr0Yvjqb10sdsB3krFglIgcyv7OD3R6pV_i526kMhlApTNBwlwg/exec";
     
     let tab = "Harian";
-    let dataRekod = []; // Pembolehubah global untuk menyimpan data laporan
+    let dataRekod = [];
 
-    // 2. FUNGSI MUAT TURUN TETAPAN (NAMA, SESI, DLL)
     window.onload = async () => {
         document.getElementById('tarikh').valueAsDate = new Date();
         try {
@@ -113,7 +111,6 @@
         } catch(e) { console.error("Data Tetapan gagal dimuatkan."); }
     };
 
-    // 3. FUNGSI TUKAR TAB (HARIAN / PERHIMPUNAN)
     function setTab(t) {
         tab = t;
         document.getElementById('sHarian').classList.toggle('hidden', t !== 'Harian');
@@ -122,28 +119,25 @@
         document.getElementById('tP').className = t === 'Perhimpunan' ? "flex-1 py-3 rounded-xl font-bold tab-active" : "flex-1 py-3 rounded-xl font-bold text-gray-400";
     }
 
-    // 4. FUNGSI NAVIGASI BAWAH (ISI LAPORAN / LAPORAN PDF)
+    // PEMBETULAN NAVIGASI
     function nav(p) {
+        // Papar/Sembunyi Halaman
         document.getElementById('borangPage').classList.toggle('hidden', p !== 'borang');
         document.getElementById('rekodPage').classList.toggle('hidden', p !== 'rekod');
         
-        // Kemaskini warna butang navigasi
+        // Sembunyi tab "Harian/Perhimpunan" atas bila berada di halaman Rekod
+        document.getElementById('tabAtas').classList.toggle('hidden', p === 'rekod');
+        
+        // Tukar Warna Butang Nav Bawah
         document.getElementById('nb').className = p === 'borang' ? "flex-1 py-3 text-[10px] font-black bg-blue-900 text-white rounded-full transition-all" : "flex-1 py-3 text-[10px] font-black text-gray-400 transition-all";
         document.getElementById('nr').className = p === 'rekod' ? "flex-1 py-3 text-[10px] font-black bg-blue-900 text-white rounded-full transition-all" : "flex-1 py-3 text-[10px] font-black text-gray-400 transition-all";
         
-        // Panggil data rekod PDF bila klik tab rekod
         if(p === 'rekod') muatStatus();
     }
 
-    // 5. FUNGSI AMBIL DATA PDF DARI GOOGLE SCRIPT
     async function muatStatus() {
         const b = document.getElementById('boxStatus');
-        b.innerHTML = `
-            <div class='text-center p-10'>
-                <div class='animate-spin inline-block w-8 h-8 border-4 border-blue-900 border-t-transparent rounded-full'></div>
-                <p class='mt-2 text-[10px] font-bold text-blue-900 uppercase tracking-widest'>Menyusun data...</p>
-            </div>`;
-        
+        b.innerHTML = `<div class='text-center p-10'><div class='animate-spin inline-block w-8 h-8 border-4 border-blue-900 border-t-transparent rounded-full'></div><p class='mt-2 text-[10px] font-bold text-blue-900 uppercase tracking-widest'>Menyusun data...</p></div>`;
         try {
             const r = await fetch(GAS_URL + "?page=dashboard");
             const d = await r.json();
@@ -154,57 +148,45 @@
         }
     }
 
-    // 6. FUNGSI PAPARAN SENARAI PDF (GAYA DASHBOARD)
     function tapisRekod(jenis) {
         const b = document.getElementById('boxStatus');
         const filtered = dataRekod.filter(f => f.type === jenis);
-
         let html = `
             <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-2xl">
-                <button onclick="tapisRekod('Harian')" class="flex-1 py-3 rounded-xl text-[10px] font-black transition-all ${jenis === 'Harian' ? 'bg-blue-900 text-white shadow-lg' : 'text-gray-400'}">REKOD HARIAN</button>
-                <button onclick="tapisRekod('Perhimpunan')" class="flex-1 py-3 rounded-xl text-[10px] font-black transition-all ${jenis === 'Perhimpunan' ? 'bg-blue-900 text-white shadow-lg' : 'text-gray-400'}">REKOD PERHIMPUNAN</button>
+                <button type="button" onclick="tapisRekod('Harian')" class="flex-1 py-3 rounded-xl text-[10px] font-black transition-all ${jenis === 'Harian' ? 'bg-blue-900 text-white shadow-lg' : 'text-gray-400'}">REKOD HARIAN</button>
+                <button type="button" onclick="tapisRekod('Perhimpunan')" class="flex-1 py-3 rounded-xl text-[10px] font-black transition-all ${jenis === 'Perhimpunan' ? 'bg-blue-900 text-white shadow-lg' : 'text-gray-400'}">REKOD PERHIMPUNAN</button>
             </div>
             <div class="grid grid-cols-1 gap-3">
         `;
 
         if (filtered.length === 0) {
-            html += `<div class="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-                        <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest text-center">Tiada rekod ${jenis} dijumpai</p>
-                     </div>`;
+            html += `<div class="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200"><p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest text-center">Tiada rekod ${jenis} dijumpai</p></div>`;
         } else {
             filtered.forEach(f => {
                 const tgl = new Date(f.date).toLocaleDateString('ms-MY', { day:'2-digit', month:'2-digit', year:'numeric' });
                 html += `
-                    <div class="bg-white p-5 rounded-[2rem] shadow-sm border border-gray-50 flex items-center justify-between transition-all">
+                    <div class="bg-white p-5 rounded-[2rem] shadow-sm border border-gray-50 flex items-center justify-between">
                         <div>
                             <p class="text-[9px] font-black text-blue-900 uppercase tracking-tighter opacity-50">MINGGU ${f.minggu}</p>
                             <p class="text-sm font-extrabold text-gray-800">${tgl}</p>
                             <p class="text-[10px] font-semibold text-gray-400 mt-0.5 uppercase tracking-tighter">${f.nama}</p>
                         </div>
-                        <button onclick="window.open('${f.url || '#'}', '_blank')" 
-                                class="bg-blue-900 text-white p-3 px-5 rounded-2xl text-[9px] font-black shadow-blue-100 shadow-xl active:scale-95 transition-all">
-                            PDF
-                        </button>
-                    </div>
-                `;
+                        <button type="button" onclick="bukaPDF('${f.url || '#'}')" class="bg-blue-900 text-white p-3 px-5 rounded-2xl text-[9px] font-black shadow-blue-100 shadow-xl active:scale-95 transition-all">PDF</button>
+                    </div>`;
             });
         }
         html += `</div>`;
         b.innerHTML = html;
     }
 
-    // 7. FUNGSI HANTAR LAPORAN (POST DATA)
     async function hantar() {
         const b = document.getElementById('btnS');
         const data = {
             jenis_laporan: tab, tarikh: document.getElementById('tarikh').value, minggu: document.getElementById('minggu').value,
             nama: document.getElementById('nama').value, sesi: document.getElementById('sesi').value, kumpulan: document.getElementById('kumpulan').value
         };
-        
         if(!data.nama || !data.minggu) return alert("Sila isi Nama Pelapor dan Minggu!");
-
         b.disabled = true; b.innerText = "MENGHANTAR LAPORAN...";
-
         if(tab === "Harian") {
             Object.assign(data, {
                 disiplin: document.getElementById('disiplin').value, kelas: document.getElementById('kelas').value, 
@@ -218,16 +200,23 @@
                 sivik: document.getElementById('sivik').value, catatan: document.getElementById('catatan').value
             });
         }
-
         try {
             await fetch(GAS_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-            alert("✅ LAPORAN BERJAYA DIHANTAR KE GOOGLE SHEETS, TELEGRAM & PDF!");
+            alert("✅ LAPORAN BERJAYA DIHANTAR!");
             location.reload();
         } catch(e) {
             alert("Ralat penghantaran!");
             b.disabled = false; b.innerText = "HANTAR LAPORAN";
         }
     }
-</script>
+
+    function bukaPDF(url) {
+        if (url && url !== "#" && url.startsWith('http')) {
+            window.open(url, '_blank');
+        } else {
+            alert("Maaf, pautan PDF tidak dijumpai atau masih dalam proses penjanaan.");
+        }
+    }
+    </script>
 </body>
 </html>
